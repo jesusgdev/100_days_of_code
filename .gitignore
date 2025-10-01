@@ -36,6 +36,8 @@ credentials.json
 *.key
 *.pem
 config.json
+token.txt
+.cache
 
 # Sistema
 .DS_Store

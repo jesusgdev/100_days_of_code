@@ -1,0 +1,712 @@
+# Guía Completa de BeautifulSoup para Principiantes
+
+## 1. Instalación y Setup Básico
+
+```python
+# Instalar BeautifulSoup
+# pip install beautifulsoup4
+
+from bs4 import BeautifulSoup
+
+# Crear un objeto soup (esto parsea/lee el HTML)
+html = "<html><body><h1>Hola</h1></body></html>"
+soup = BeautifulSoup(html, 'html.parser')
+```
+
+**Línea por línea:**
+- Importamos BeautifulSoup desde el módulo bs4
+- Creamos una variable con HTML (puede venir de un archivo o web)
+- `BeautifulSoup(html, 'html.parser')` convierte el texto HTML en un objeto que podemos manipular
+- `'html.parser'` es el parser (lector) que usa Python por defecto
+
+---
+
+## 2. Métodos Fundamentales para Buscar Elementos
+
+### **2.1 `.find()` - Encuentra el PRIMER elemento**
+
+```python
+html = """
+<div class="producto">Laptop</div>
+<div class="producto">Mouse</div>
+<div class="producto">Teclado</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Buscar el primer div con clase "producto"
+primer_producto = soup.find('div', class_='producto')
+print(primer_producto.text)  # Resultado: Laptop
+```
+
+**Línea por línea:**
+- `soup.find('div', class_='producto')` busca el PRIMER `<div>` que tenga `class="producto"`
+- Solo devuelve UN elemento (el primero que encuentra)
+- `.text` extrae el texto dentro del elemento
+- **Nota:** usamos `class_` (con guion bajo) porque `class` es palabra reservada en Python
+
+**Cuándo usar `.find()`:**
+- Cuando solo necesitas UN elemento
+- Cuando sabes que solo hay un elemento de ese tipo
+- Ejemplo: buscar el título de una página, un header único
+
+---
+
+### **2.2 `.find_all()` - Encuentra TODOS los elementos**
+
+```python
+html = """
+<div class="producto">Laptop</div>
+<div class="producto">Mouse</div>
+<div class="producto">Teclado</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Buscar TODOS los divs con clase "producto"
+todos_productos = soup.find_all('div', class_='producto')
+print(len(todos_productos))  # Resultado: 3
+
+# Recorrer cada producto
+for producto in todos_productos:
+    print(producto.text)
+# Resultado:
+# Laptop
+# Mouse
+# Teclado
+```
+
+**Línea por línea:**
+- `soup.find_all('div', class_='producto')` busca TODOS los `<div>` con esa clase
+- Devuelve una lista de elementos
+- `len(todos_productos)` cuenta cuántos elementos encontró
+- Recorremos la lista con un `for` para procesar cada elemento
+
+**Cuándo usar `.find_all()`:**
+- Cuando necesitas múltiples elementos
+- Para listas de productos, posts, artículos, etc.
+- Es el método más usado en web scraping
+
+---
+
+## 3. Seleccionar por Diferentes Atributos
+
+### **3.1 Por etiqueta (tag)**
+
+```python
+html = "<h1>Título</h1><p>Párrafo</p>"
+soup = BeautifulSoup(html, 'html.parser')
+
+titulo = soup.find('h1')
+parrafo = soup.find('p')
+```
+
+**Explicación:**
+- Busca directamente por el nombre de la etiqueta HTML
+- No necesitas especificar atributos adicionales
+
+---
+
+### **3.2 Por clase**
+
+```python
+html = '<div class="destacado">Importante</div>'
+soup = BeautifulSoup(html, 'html.parser')
+
+# Opción 1: usar class_
+elemento = soup.find('div', class_='destacado')
+
+# Opción 2: usar attrs (atributos)
+elemento = soup.find('div', attrs={'class': 'destacado'})
+```
+
+**Explicación:**
+- Opción 1 es más simple y directa
+- Opción 2 es útil cuando el atributo tiene caracteres especiales
+
+---
+
+### **3.3 Por ID**
+
+```python
+html = '<div id="principal">Contenido</div>'
+soup = BeautifulSoup(html, 'html.parser')
+
+# Los IDs son únicos, siempre usa .find()
+elemento = soup.find('div', id='principal')
+```
+
+**Explicación:**
+- Los IDs deben ser únicos en HTML
+- Por eso usamos `.find()` no `.find_all()`
+- No lleva guion bajo porque `id` no es palabra reservada
+
+---
+
+### **3.4 Por múltiples clases**
+
+```python
+html = '<div class="producto destacado">Oferta</div>'
+soup = BeautifulSoup(html, 'html.parser')
+
+# Buscar elemento que tenga AMBAS clases
+elemento = soup.find('div', class_='producto destacado')
+```
+
+**Explicación:**
+- Algunos elementos tienen múltiples clases separadas por espacio
+- Puedes buscar por una o por todas
+
+---
+
+## 4. Extraer Información de los Elementos
+
+### **4.1 `.text` o `.get_text()` - Extraer texto**
+
+```python
+html = '<h1>Hola <span>Mundo</span></h1>'
+soup = BeautifulSoup(html, 'html.parser')
+
+titulo = soup.find('h1')
+
+# Opción 1: .text (atributo)
+print(titulo.text)  # Resultado: Hola Mundo
+
+# Opción 2: .get_text() (método)
+print(titulo.get_text())  # Resultado: Hola Mundo
+
+# Con strip para quitar espacios
+print(titulo.get_text(strip=True))  # Resultado: HolaMundo
+```
+
+**Línea por línea:**
+- `.text` y `.get_text()` hacen lo mismo: extraen todo el texto
+- Incluye texto de etiquetas hijas (el `<span>`)
+- `strip=True` quita espacios en blanco al inicio y final
+- `.get_text()` es más flexible con opciones
+
+---
+
+### **4.2 `.get()` - Extraer atributos**
+
+```python
+html = '<a href="https://google.com" title="Buscador">Google</a>'
+soup = BeautifulSoup(html, 'html.parser')
+
+link = soup.find('a')
+
+# Extraer el href
+url = link.get('href')
+print(url)  # Resultado: https://google.com
+
+# Extraer el title
+titulo = link.get('title')
+print(titulo)  # Resultado: Buscador
+
+# Con valor por defecto si no existe
+precio = link.get('precio', 'No disponible')
+print(precio)  # Resultado: No disponible
+```
+
+**Línea por línea:**
+- `.get('atributo')` extrae el valor de un atributo HTML
+- `href`, `src`, `title`, `class`, etc. son atributos comunes
+- Puedes dar un valor por defecto como segundo argumento
+- Si el atributo no existe, devuelve `None` (o tu valor por defecto)
+
+**Cuándo usar `.get()`:**
+- Extraer URLs de enlaces (`href`)
+- Extraer rutas de imágenes (`src`)
+- Extraer cualquier atributo HTML
+
+---
+
+### **4.3 Acceso directo con corchetes `[]`**
+
+```python
+html = '<img src="foto.jpg" alt="Mi foto">'
+soup = BeautifulSoup(html, 'html.parser')
+
+imagen = soup.find('img')
+
+# Acceso directo (puede dar error si no existe)
+ruta = imagen['src']
+print(ruta)  # Resultado: foto.jpg
+
+# Esto daría error si 'precio' no existe:
+# precio = imagen['precio']  # KeyError!
+```
+
+**Explicación:**
+- `elemento['atributo']` es más corto pero peligroso
+- Da error si el atributo no existe
+- `.get()` es más seguro porque devuelve `None`
+- Usa `[]` solo si estás 100% seguro que existe
+
+---
+
+## 5. Navegación entre Elementos
+
+### **5.1 `.find_next_sibling()` - Siguiente hermano**
+
+```python
+html = """
+<tr class="titulo">Producto</tr>
+<tr class="precio">$100</tr>
+<tr class="stock">Disponible</tr>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Encontrar el título
+titulo = soup.find('tr', class_='titulo')
+
+# Encontrar la siguiente fila (hermano)
+precio = titulo.find_next_sibling('tr')
+print(precio.text)  # Resultado: $100
+```
+
+**Línea por línea:**
+- Los "hermanos" (siblings) son elementos al mismo nivel
+- `.find_next_sibling()` busca el siguiente elemento hermano
+- Útil cuando la información está en filas/columnas consecutivas
+- Puedes especificar qué tipo de elemento buscar
+
+---
+
+### **5.2 `.find_parent()` - Encontrar el padre**
+
+```python
+html = """
+<div class="contenedor">
+    <p>Texto dentro del div</p>
+</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Encontrar el párrafo
+parrafo = soup.find('p')
+
+# Encontrar su elemento padre
+padre = parrafo.find_parent('div')
+print(padre.get('class'))  # Resultado: ['contenedor']
+```
+
+**Explicación:**
+- `.find_parent()` sube un nivel en el HTML
+- Útil para encontrar contenedores de elementos
+- Puedes especificar el tipo de padre que buscas
+
+---
+
+### **5.3 `.find_next()` - Siguiente elemento (cualquiera)**
+
+```python
+html = """
+<h2>Título</h2>
+<p>Párrafo 1</p>
+<p>Párrafo 2</p>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Encontrar el h2
+titulo = soup.find('h2')
+
+# Encontrar el siguiente elemento <p>
+siguiente = titulo.find_next('p')
+print(siguiente.text)  # Resultado: Párrafo 1
+```
+
+**Explicación:**
+- Busca el siguiente elemento en todo el documento
+- No tiene que ser hermano, puede estar en cualquier parte
+- Busca en orden de aparición en el HTML
+
+---
+
+## 6. Casos de Uso Prácticos
+
+### **Caso 1: Extraer todos los enlaces de una página**
+
+```python
+html = """
+<a href="/inicio">Inicio</a>
+<a href="/productos">Productos</a>
+<a href="/contacto">Contacto</a>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Paso 1: Encontrar todos los <a>
+enlaces = soup.find_all('a')
+
+# Paso 2: Recorrer y extraer href y texto
+for enlace in enlaces:
+    url = enlace.get('href')
+    texto = enlace.text
+    print(f"Texto: {texto} -> URL: {url}")
+
+# Resultado:
+# Texto: Inicio -> URL: /inicio
+# Texto: Productos -> URL: /productos
+# Texto: Contacto -> URL: /contacto
+```
+
+**Paso a paso:**
+1. `find_all('a')` encuentra todos los enlaces
+2. Iteramos cada enlace con un `for`
+3. `.get('href')` extrae la URL
+4. `.text` extrae el texto del enlace
+5. Imprimimos ambos valores formateados
+
+---
+
+### **Caso 2: Scraping de lista de productos**
+
+```python
+html = """
+<div class="producto">
+    <h3 class="nombre">Laptop</h3>
+    <span class="precio">$999</span>
+</div>
+<div class="producto">
+    <h3 class="nombre">Mouse</h3>
+    <span class="precio">$29</span>
+</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Paso 1: Encontrar todos los productos
+productos = soup.find_all('div', class_='producto')
+
+# Paso 2: Extraer información de cada producto
+for producto in productos:
+    # Paso 3: Buscar nombre dentro de este producto
+    nombre = producto.find('h3', class_='nombre').text
+    
+    # Paso 4: Buscar precio dentro de este producto
+    precio = producto.find('span', class_='precio').text
+    
+    print(f"{nombre}: {precio}")
+
+# Resultado:
+# Laptop: $999
+# Mouse: $29
+```
+
+**Paso a paso:**
+1. Encontramos todos los contenedores de productos
+2. Para cada producto, buscamos DENTRO de él (no en todo el documento)
+3. `producto.find()` busca solo dentro de ese `<div>` específico
+4. Extraemos nombre y precio
+5. Los imprimimos juntos
+
+---
+
+### **Caso 3: Tablas HTML**
+
+```python
+html = """
+<table>
+    <tr>
+        <td>Producto</td>
+        <td>Precio</td>
+    </tr>
+    <tr>
+        <td>Laptop</td>
+        <td>$999</td>
+    </tr>
+    <tr>
+        <td>Mouse</td>
+        <td>$29</td>
+    </tr>
+</table>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Paso 1: Encontrar la tabla
+tabla = soup.find('table')
+
+# Paso 2: Encontrar todas las filas
+filas = tabla.find_all('tr')
+
+# Paso 3: Saltar la primera fila (encabezados)
+for fila in filas[1:]:
+    # Paso 4: Encontrar todas las celdas en esta fila
+    celdas = fila.find_all('td')
+    
+    # Paso 5: Extraer texto de cada celda
+    producto = celdas[0].text
+    precio = celdas[1].text
+    
+    print(f"{producto}: {precio}")
+
+# Resultado:
+# Laptop: $999
+# Mouse: $29
+```
+
+**Paso a paso:**
+1. Encontramos la tabla completa
+2. Encontramos todas las filas `<tr>`
+3. `filas[1:]` salta la primera fila (encabezados)
+4. Para cada fila, encontramos todas las celdas `<td>`
+5. Accedemos a cada celda por índice: `celdas[0]`, `celdas[1]`
+6. Extraemos el texto de cada celda
+
+---
+
+## 7. Manejo de Errores Comunes
+
+### **7.1 Elemento no encontrado**
+
+```python
+html = "<div>Contenido</div>"
+soup = BeautifulSoup(html, 'html.parser')
+
+# Buscar algo que no existe
+elemento = soup.find('span')
+
+# Esto daría error:
+# print(elemento.text)  # AttributeError: 'NoneType' object has no attribute 'text'
+
+# SOLUCIÓN: Verificar antes de usar
+if elemento:
+    print(elemento.text)
+else:
+    print("Elemento no encontrado")
+
+# O usar un valor por defecto
+texto = elemento.text if elemento else "No disponible"
+```
+
+**Explicación:**
+- Si `.find()` no encuentra nada, devuelve `None`
+- Intentar usar `.text` en `None` da error
+- Siempre verifica con `if elemento:` antes de acceder a sus propiedades
+
+---
+
+### **7.2 Atributo no existe**
+
+```python
+html = '<a href="/inicio">Link</a>'
+soup = BeautifulSoup(html, 'html.parser')
+
+link = soup.find('a')
+
+# Mal: puede dar error si 'title' no existe
+# titulo = link['title']  # KeyError!
+
+# Bien: usar .get() con valor por defecto
+titulo = link.get('title', 'Sin título')
+print(titulo)  # Resultado: Sin título
+```
+
+**Explicación:**
+- Usa `.get()` en lugar de `[]` para atributos opcionales
+- Siempre proporciona un valor por defecto
+
+---
+
+## 8. Tips y Mejores Prácticas
+
+### **Tip 1: Usa `.strip()` para limpiar texto**
+
+```python
+html = '<p>  Texto con espacios   </p>'
+soup = BeautifulSoup(html, 'html.parser')
+
+texto = soup.find('p').text
+print(f"Sin strip: '{texto}'")  # '  Texto con espacios   '
+
+texto_limpio = texto.strip()
+print(f"Con strip: '{texto_limpio}'")  # 'Texto con espacios'
+```
+
+---
+
+### **Tip 2: Combina métodos para búsquedas específicas**
+
+```python
+html = """
+<div class="producto" data-id="123">
+    <span class="precio">$99</span>
+</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Buscar por múltiples atributos
+producto = soup.find('div', class_='producto', attrs={'data-id': '123'})
+precio = producto.find('span', class_='precio').text
+```
+
+---
+
+### **Tip 3: Usa listas por comprensión para código limpio**
+
+```python
+html = """
+<div class="item">A</div>
+<div class="item">B</div>
+<div class="item">C</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Extraer todos los textos en una línea
+textos = [item.text for item in soup.find_all('div', class_='item')]
+print(textos)  # ['A', 'B', 'C']
+```
+
+---
+
+## 9. Select vs Find: ¿Cuál usar?
+
+### **Diferencia Principal**
+
+**`.find()` / `.find_all()`** → Sintaxis de BeautifulSoup (más fácil)
+**`.select()` / `.select_one()`** → Sintaxis CSS (más poderosa)
+
+### **9.1 Ejemplos de `.select()` - Usa selectores CSS**
+
+```python
+html = """
+<div class="producto">
+    <h3 id="titulo">Laptop</h3>
+    <span class="precio">$999</span>
+</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Seleccionar por clase (nota el punto)
+productos = soup.select('.producto')
+
+# Seleccionar por ID (nota el #)
+titulo = soup.select_one('#titulo')
+
+# Seleccionar por etiqueta
+precios = soup.select('span')
+
+# Combinación: div con clase producto
+divs = soup.select('div.producto')
+
+# Descendientes: span dentro de div
+precios_en_div = soup.select('div .precio')
+```
+
+**Línea por línea:**
+- `.select('.producto')` → busca elementos con `class="producto"` (punto = clase)
+- `.select_one('#titulo')` → busca elemento con `id="titulo"` (# = id)
+- `.select('span')` → busca todas las etiquetas `<span>`
+- `.select('div.producto')` → div que tenga esa clase específica
+- `.select('div .precio')` → elementos `.precio` dentro de un `<div>`
+
+### **9.2 Comparación directa**
+
+```python
+html = '<div class="item">Texto</div>'
+soup = BeautifulSoup(html, 'html.parser')
+
+# Usando find()
+elemento1 = soup.find('div', class_='item')
+
+# Usando select_one() - EQUIVALENTE
+elemento2 = soup.select_one('div.item')
+
+# Ambos dan el mismo resultado
+print(elemento1.text)  # Texto
+print(elemento2.text)  # Texto
+```
+
+### **9.3 Ventajas de cada uno**
+
+**Usa `.find()` cuando:**
+- Eres principiante (más intuitivo)
+- Buscas por múltiples atributos: `soup.find('div', class_='item', id='main')`
+- El código es más legible: `soup.find('div', class_='producto')`
+
+**Usa `.select()` cuando:**
+- Ya conoces CSS
+- Necesitas selectores complejos (hijo directo, hermanos, etc.)
+- Quieres buscar por múltiples clases o jerarquías
+
+### **9.4 Selectores CSS avanzados con `.select()`**
+
+```python
+html = """
+<div class="contenedor">
+    <p class="destacado">Párrafo 1</p>
+    <p>Párrafo 2</p>
+    <div>
+        <p class="destacado">Párrafo 3</p>
+    </div>
+</div>
+"""
+soup = BeautifulSoup(html, 'html.parser')
+
+# Hijo directo (solo hijos inmediatos)
+hijos_directos = soup.select('div.contenedor > p')
+print(len(hijos_directos))  # 2 (no incluye el párrafo dentro del div anidado)
+
+# Descendientes (todos los niveles)
+todos_p = soup.select('div.contenedor p')
+print(len(todos_p))  # 3 (incluye todos)
+
+# Múltiples clases
+destacados = soup.select('.destacado')
+print(len(destacados))  # 2
+
+# Combinar: párrafos con clase destacado
+p_destacados = soup.select('p.destacado')
+print(len(p_destacados))  # 2
+```
+
+**Explicación de selectores:**
+- `div > p` → Hijo DIRECTO (solo un nivel)
+- `div p` → Descendiente (cualquier nivel de profundidad)
+- `.destacado` → Por clase
+- `p.destacado` → Etiqueta `<p>` que tenga clase "destacado"
+
+### **9.5 Cuándo NO usar `.select()`**
+
+```python
+html = '<div data-id="123" data-name="producto">Texto</div>'
+soup = BeautifulSoup(html, 'html.parser')
+
+# Con find() es fácil buscar por atributos personalizados
+elemento = soup.find('div', attrs={'data-id': '123'})
+
+# Con select() es más complicado
+elemento = soup.select_one('div[data-id="123"]')
+
+# find() es más claro aquí
+```
+
+### **9.6 Tabla comparativa**
+
+| Característica | `.find()` / `.find_all()` | `.select()` / `.select_one()` |
+|----------------|---------------------------|-------------------------------|
+| Sintaxis | Python/BeautifulSoup | CSS |
+| Facilidad | Más fácil para principiantes | Requiere conocer CSS |
+| Clases | `class_='nombre'` | `.nombre` |
+| IDs | `id='nombre'` | `#nombre` |
+| Múltiples atributos | Muy fácil | Más complejo |
+| Selectores complejos | No soporta | Soporta (`>`, `+`, `~`) |
+| Devuelve | Un elemento o lista | Un elemento o lista |
+
+### **Mi recomendación para principiantes:**
+
+1. **Empieza con `.find()` y `.find_all()`** - Son más intuitivos
+2. **Aprende `.select()` después** - Cuando necesites selectores más complejos
+3. **Usa lo que te resulte más claro** - Ambos funcionan bien
+
+## Resumen de Métodos Más Usados
+
+| Método | Uso | Devuelve |
+|--------|-----|----------|
+| `.find()` | Primer elemento (sintaxis BS) | Un elemento o `None` |
+| `.find_all()` | Todos los elementos (sintaxis BS) | Lista de elementos |
+| `.select_one()` | Primer elemento (sintaxis CSS) | Un elemento o `None` |
+| `.select()` | Todos los elementos (sintaxis CSS) | Lista de elementos |
+| `.text` | Extraer texto | String |
+| `.get()` | Extraer atributo | String o `None` |
+| `.find_next_sibling()` | Siguiente hermano | Un elemento o `None` |
+| `.find_parent()` | Elemento padre | Un elemento o `None` |
+
+**Regla de oro:** Siempre verifica si un elemento existe antes de acceder a sus propiedades para evitar errores.
