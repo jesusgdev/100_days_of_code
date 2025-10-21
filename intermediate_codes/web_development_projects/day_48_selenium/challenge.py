@@ -1,7 +1,5 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
-import time
 
 # Keep Chrome browser open after program finishes
 chrome_options = webdriver.ChromeOptions()

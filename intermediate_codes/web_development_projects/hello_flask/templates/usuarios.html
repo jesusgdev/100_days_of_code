@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+    <h1>Usuarios Registrados</h1>
+
+    <!-- Loop en Jinja2 -->
+    {% for usuario in usuarios %}
+        <div>
+            <h2>{{ usuario.nombre }}</h2>
+            <p>Edad: {{ usuario.edad }}</p>
+
+            <!-- Condicional en Jinja2 -->
+            {% if usuario.activo %}
+                <span style="color: green;">✓ Activo</span>
+            {% else %}
+                <span style="color: red;">✗ Inactivo</span>
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+</body>
+</html>

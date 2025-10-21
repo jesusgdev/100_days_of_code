@@ -38,6 +38,7 @@ credentials.json
 config.json
 token.txt
 .cache
+LICENSE.txt
 
 # Sistema
 .DS_Store

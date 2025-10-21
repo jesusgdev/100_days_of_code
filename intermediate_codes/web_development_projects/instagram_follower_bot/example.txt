@@ -1,0 +1,33 @@
+<input aria-label="Phone number, username, or email" aria-required="true" autocapitalize="off" autocorrect="off" maxlength="75" class="_aa4b _add6 _ac4d _ap35" dir="" type="text" value="" name="username">
+
+Tienes varias opciones para encontrar ese input con Selenium:
+
+Opción 1: Por atributo name (Más simple y recomendada)
+from selenium.webdriver.common.by import By
+username_input = driver.find_element(By.NAME, "username")
+username_input.send_keys("tu_usuario")
+
+Opción 2: Por atributo aria-label
+username_input = driver.find_element(By.CSS_SELECTOR, "input[aria-label='Phone number, username, or email']")
+username_input.send_keys("tu_usuario")
+
+Opción 3: Por XPath con aria-label
+username_input = driver.find_element(By.XPATH, "//input[@aria-label='Phone number, username, or email']")
+username_input.send_keys("tu_usuario")
+
+Opción 4: Por tipo y nombre combinados
+username_input = driver.find_element(By.CSS_SELECTOR, "input[type='text'][name='username']")
+username_input.send_keys("tu_usuario")
+
+Opción 5: Por XPath con name
+username_input = driver.find_element(By.XPATH, "//input[@name='username']")
+username_input.send_keys("tu_usuario")
+
+Opción 6: Con WebDriverWait (Más robusta)
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+wait = WebDriverWait(driver, 10)
+username_input = wait.until(
+    EC.presence_of_element_located((By.NAME, "username"))
+)
+username_input.send_keys("tu_usuario")
