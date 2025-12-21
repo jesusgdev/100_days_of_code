@@ -1,0 +1,9 @@
+Estoy aprendiendo a trabajar con rest api y postman pero tengo muchas dudas, por lo que quiero que me generes una guia detallada, simple de entender con ejemplos sencillos (para un estudiante, no me coloques ejemplos de produccion) de todo lo referente a estos temas, inclueyeme los mejores y mas practicos snipets o boilerplates que podria necesitar, hazme la guia pasa a paso bien explicada de como hacer todo lo referente a los get, post, update, put/patch, delete entre otros, incluyeme todo lo que voy a necesitar para trabajar con esto, flask, jsonify, sqlalchemy moderno, y todos los elementos que pueda llegar a necesitar, hazme la guia en un README.md que pueda incluir en mi proyecto, generame en un artifact
+IMPORTANTE:
+1. No uses el paquete o metodo Blueprint que no lo manejo aun y estoy aprendiendo.
+2. No utilices el metodo query para llamar un registro a la base de datos, utiliza sqlalchemy 2.0+ es decir execute, select, all, scalars para llamar a los registros.
+3. Recuerda utilizar una metodologia sencilla y facil de entender.
+4. Todos los comentarios y documentacion dentro del codigo colocalos en ingles el resto de la explicacion fuera del codigo en espanol.
+5. Recuerda generarme los boilerplates o snipets mas utiles que pueda necesitar en estos temas.
+6. Toda la guia como te dije debe estar en un README.md.
+Te paso el ultimo codigo que hice para que tengas una referencia de lo que estoy usando, mantente en ese grado de dificultad y no utilices metodos mas complejos que aun estoy aprendiendo.

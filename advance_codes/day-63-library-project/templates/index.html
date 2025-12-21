@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Library{% endblock %}
+
+{% block content %}
+
+<body class="mt-3 ms-3">
+<h1>My Library</h1>
+
+{% if not books %}
+<p class="ms-1">Library is empty.</p>
+
+{% else %}
+<div class="container-fluid px-0">
+    {% for book in books %}
+    <div class="row mb-2 align-items-center gx-0">
+        <div class="col d-flex align-items-center gap-3">
+            <ul style="padding-left: 20px; margin-bottom: 0px">
+                <li>
+                    <a href="{{ url_for('delete', id=book.id) }}">Delete</a>
+                    {{ book.title+' - '+book.author+' - '+(book.rating|string)+'/10' }}
+                </li>
+            </ul>
+            <a href="{{ url_for('edit', id=book.id) }}">Edit Rating</a>
+        </div>
+
+    </div>
+</div>
+
+    {% endfor %}
+{% endif %}
+
+<a href="{{ url_for('add') }}">Add New Book</a>
+</body>
+{% endblock %}

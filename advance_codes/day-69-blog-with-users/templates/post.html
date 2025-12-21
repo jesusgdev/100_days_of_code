@@ -1,0 +1,104 @@
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% include "header.html" %}
+
+{# Page Header with post image #}
+<header class="masthead" style="background-image: url('{{post.img_url}}')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="post-heading">
+                    <h1>{{ post.title }}</h1>
+                    <h2 class="subheading">{{ post.subtitle }}</h2>
+                    <span class="meta">
+                        Posted by
+                        <a href="#" style="color: dodgerblue">{{ post.author.name }}</a>
+                        on {{ post.date }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+{# Post Content #}
+<article>
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7 mb-3">
+
+                {# Post body content #}
+                {{ post.body|safe }}
+
+                {# Edit button - only visible to admin (user id 1) #}
+                {% if current_user.id == 1 %}
+                <div class="d-flex justify-content-end mb-4">
+                    <a class="btn btn-primary" href="{{url_for('edit_post', post_id=post.id)}}">
+                        Edit Post
+                    </a>
+                </div>
+                {% endif %}
+
+                <hr class="my-4">
+
+                {# Display existing comments #}
+                <h3>Comments ({{ post.comments|length }})</h3>
+
+                {% if post.comments %}
+                <ul class="commentList">
+                    {% for comment in post.comments %}
+                    <li>
+                        <div class="commenterImage">
+                            <img src="{{ url_for('static', filename='assets/img/default-profile.jpg') }}"
+                                 alt="Profile"/>
+                        </div>
+                        <div class="commentText">
+                            {# Comment text with safe filter to render HTML from CKEditor #}
+                            {{ comment.text|safe }}
+                            <span class="date sub-text">{{ comment.comment_author.name }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No comments yet. Be the first to comment!</p>
+                {% endif %}
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <p class="flash {{ category }}">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <hr class="my-4">
+
+                {# Render comment form #}
+                {{ render_form(form, novalidate=True) }}
+
+            </div>
+        </div>
+    </div>
+</article>
+
+{% include "footer.html" %}
+
+{# Load CKEditor AFTER footer #}
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='comment_text') }}
+
+<!--Other option to the comment section-->
+
+<!--{# Comment form - only for logged-in users #}-->
+<!--{% if current_user.is_authenticated %}-->
+<!--    <h4>Comment</h4>-->
+<!--    {# Render comment form #}-->
+<!--    {{ render_form(form, novalidate=True) }}-->
+<!--{% else %}-->
+<!--    <p class="text-center">-->
+<!--        <a href="{{ url_for('login') }}">Login</a> or-->
+<!--        <a href="{{ url_for('register') }}">Register</a>-->
+<!--        to leave a comment.-->
+<!--    </p>-->
+<!--{% endif %}-->
