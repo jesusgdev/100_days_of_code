@@ -7,12 +7,16 @@
 
 
 from datetime import datetime
+from dotenv import load_dotenv
 import pandas
 import random
 import smtplib
+import os
 
-MY_EMAIL = "YOUR EMAIL"
-MY_PASSWORD = "YOUR PASSWORD"
+load_dotenv()
+
+MY_EMAIL = os.environ['MY_EMAIL']
+MY_PASSWORD = os.environ['MY_PASSWORD']
 
 today = datetime.now()
 today_tuple = (today.month, today.day)
@@ -26,7 +30,7 @@ if today_tuple in birthdays_dict:
         contents = letter_file.read()
         contents = contents.replace("[NAME]", birthday_person["name"])
 
-    with smtplib.SMTP("YOUR EMAIL PROVIDER SMTP SERVER ADDRESS") as connection:
+    with smtplib.SMTP(host="smtp.gmail.com", port=587) as connection:
         connection.starttls()
         connection.login(MY_EMAIL, MY_PASSWORD)
         connection.sendmail(

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Book{% endblock %}
+
+{% block content %}
+<div class="ms-4 mt-3" style="font-size: 1.05rem; font-weight: 300">
+    <p>Book Name: {{ book.title }}</p>
+    <p>Current Rating: {{ book.rating }}</p>
+</div>
+
+<div class="container-fluid px-0">
+    <!-- ✅ Add g-0 to remove space between columns -->
+    <div class="row ms-3 g-0">
+
+        <!-- ✅ ESTO SÍ FUNCIONA -->
+        <form method="POST">
+            <input name="rating" value="" style="height: 32px">
+            <button type="submit" class="btn btn-secondary">Change Rating</button>
+            <!-- ↑ El <button> envía el formulario con los datos -->
+        </form>
+    </div>
+</div>
+
+{% endblock %}

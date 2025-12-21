@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Jesus's Blog{% endblock %}</title>
+
+    {# CSS is here#}
+</head>
+<body>
+    {# Navbar #}
+    {% include "header.html" %}
+    
+    {# Content block #}
+    {% block content %}{% endblock %}
+    
+    {# Footer #}
+    {% include "footer.html" %}
+    
+    {# Scripts block #}
+    {% block scripts %}
+    {# Default scripts here (jQuery, Bootstrap, etc.) #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</body>
+</html>
