@@ -31,7 +31,8 @@ from flask_bootstrap import \
     Bootstrap5  # Integrates Bootstrap 5 CSS framework for responsive design and pre-built UI components
 from flask_ckeditor import \
     CKEditor  # Rich text WYSIWYG editor for creating and editing formatted content (blog posts, articles, etc.)
-# from flask_gravatar import Gravatar  # Generates Gravatar profile images based on user email addresses
+# Generates Gravatar profile images based on user email addresses
+import hashlib
 
 # ============================================================================
 # FLASK EXTENSIONS - DATABASE (SQLAlchemy)
@@ -137,6 +138,10 @@ class User(db.Model, UserMixin):
         back_populates="comment_author",
         cascade="all, delete-orphan")
 
+    def avatar(self, size=100):
+        """Return Gravatar URL for this user"""
+        return gravatar_url(self.email, size=size)
+
     def __repr__(self):
         return f'<User: {self.name}>'
 
@@ -233,6 +238,31 @@ login_manager.init_app(app)
 # Configure login view (where to redirect if not logged in)
 login_manager.login_view = 'login'  # Name of your login route
 
+
+# ===== GRAVATAR HELPER FUNCTION =====
+def gravatar_url(email, size=50, default='retro', rating='g'):
+    """
+    Generate Gravatar URL from email address.
+
+    Args:
+        email (str): User's email address
+        size (int): Image size in pixels (1-2048), default 100
+        default (str): Default image style if no Gravatar exists
+            Options: '404', 'mp', 'identicon', 'monsterid', 'wavatar',
+                     'retro', 'robohash', 'blank'
+        rating (str): Content rating - 'g', 'pg', 'r', 'x'
+
+    Returns:
+        str: Gravatar image URL
+    """
+    # Create MD5 hash of lowercase, stripped email
+    email_hash = hashlib.md5(email.lower().strip().encode('utf-8')).hexdigest()
+
+    # Build and return Gravatar URL
+    return f"https://www.gravatar.com/avatar/{email_hash}?s={size}&d={default}&r={rating}"
+
+# Make gravatar_url available in all Jinja templates
+app.jinja_env.globals['gravatar'] = gravatar_url
 
 @login_manager.user_loader
 def load_user(user_id):

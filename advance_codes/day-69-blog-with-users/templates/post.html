@@ -48,10 +48,12 @@
                 <ul class="commentList">
                     {% for comment in post.comments %}
                     <li>
+
                         <div class="commenterImage">
-                            <img src="{{ url_for('static', filename='assets/img/default-profile.jpg') }}"
-                                 alt="Profile"/>
+                            <img src="{{ gravatar(comment.comment_author.email) }}"
+                                 alt="{{ comment.comment_author.name }}"/>
                         </div>
+
                         <div class="commentText">
                             {# Comment text with safe filter to render HTML from CKEditor #}
                             {{ comment.text|safe }}

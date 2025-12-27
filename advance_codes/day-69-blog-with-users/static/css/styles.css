@@ -10865,3 +10865,11 @@ header.masthead .post-heading .meta a {
 .flash.info {
     color: blue;
 }
+
+.commenterImage img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;  /* Opcional: borde */
+}
