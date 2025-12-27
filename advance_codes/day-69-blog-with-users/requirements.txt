@@ -1,12 +1,13 @@
-Flask==3.1.2                       # Última versión estable de Flask (2025) :contentReference[oaicite:1]{index=1}
-Bootstrap-Flask==2.5.0            # Actual (PyPI/repology indica 2.5.0 disponible) :contentReference[oaicite:2]{index=2}
-Flask-CKEditor==1.0.0             # Versión 1.0.0 recientemente publicada (Jul 2024) :contentReference[oaicite:3]{index=3}
-Flask-Login==0.6.3                # Última estable disponible :contentReference[oaicite:4]{index=4}
-Flask-Gravatar==0.5.0             # Última publicada en PyPI (no hay versión más nueva) :contentReference[oaicite:5]{index=5}
-Flask-WTF==1.2.2                  # Última versión estable :contentReference[oaicite:6]{index=6}
-WTForms==3.0.1                    # Última conocida (el proyecto no actualiza muy seguido) :contentReference[oaicite:7]{index=7}
-Werkzeug==3.1.4                   # Última versión estable del core WSGI lib :contentReference[oaicite:8]{index=8}
-flask_sqlalchemy==3.1.1           # Última versión de Flask-SQLAlchemy :contentReference[oaicite:9]{index=9}
-SQLAlchemy==2.0.45                # Última en la serie 2.0 (estable) —— comúnmente compatible
-gunicorn==21.2.0                  # Aún reciente y estable (no ha cambiado mucho)  
-psycopg2-binary==2.9.9            # Último paquete “binary wheel” ampliamente usado  
+Flask==3.1.2
+Bootstrap-Flask==2.5.0
+Flask-CKEditor==1.0.0
+Flask-Login==0.6.3
+Flask-Gravatar==0.5.0
+flask_wtf==1.2.2
+WTForms==3.0.1
+Werkzeug==3.1.4
+flask_sqlalchemy==3.1.1
+SQLAlchemy==2.0.45
+gunicorn==21.2.0
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
