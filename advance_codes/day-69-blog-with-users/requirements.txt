@@ -4,10 +4,11 @@ Flask-CKEditor==1.0.0
 Flask-Login==0.6.3
 Flask-Gravatar==0.5.0
 flask_wtf==1.2.2
-WTForms==3.0.1
+WTForms==3.2.1
 Werkzeug==3.1.4
 flask_sqlalchemy==3.1.1
 SQLAlchemy==2.0.45
-gunicorn==21.2.0
-psycopg2-binary==2.9.9
-python-dotenv==1.0.0
+gunicorn==23.0.0
+psycopg2-binary==2.9.11
+python-dotenv==1.2.1
+bleach==6.3.0
