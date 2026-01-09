@@ -1,0 +1,42 @@
+✅ Guardar los archivos en Google Drive para usarlos en colab.
+
+Es la forma estándar y más segura.
+
+1️⃣ Montar Google Drive
+
+Ejecuta esta celda en Colab:
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+
+Te pedirá permiso → acepta.
+
+2️⃣ Crear una carpeta para tu proyecto
+
+Por ejemplo:
+
+import os
+
+ruta = '/content/drive/MyDrive/mi_proyecto'
+os.makedirs(ruta, exist_ok=True)
+
+
+Ahora esa carpeta sí es permanente.
+
+3️⃣ Subir o copiar tus CSV ahí
+
+Puedes:
+
+Subirlos desde el panel de Files dentro de esa ruta
+
+O copiarlos por código
+
+Ejemplo de lectura de un CSV:
+
+import pandas as pd
+
+df = pd.read_csv('/content/drive/MyDrive/mi_proyecto/datos.csv')
+
+
+📌 Siempre que vuelvas a abrir el notebook, solo montas Drive y listo.
